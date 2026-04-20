@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Thank you · Claude Enablement{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="section center-card">
+        <div class="icon">✓</div>
+        <h1>{% if name %}Thanks, {{ name.split(' ')[0] }}!{% else %}Thanks!{% endif %}</h1>
+        <p>Your response has been recorded.</p>
+        <p class="muted">We'll use your answers to place you in a well-balanced hands-on group for the workshop.</p>
+
+        <div class="details">
+            <h3>What happens next</h3>
+            <p>• We'll assign you to a group of ~6 alongside complementary teammates.</p>
+            <p>• Your group number will be on your name tent on Day 1.</p>
+            <p>• No prep reading required — just bring your laptop and curiosity.</p>
+        </div>
+
+        <div class="details" style="margin-top: 16px;">
+            <h3>Workshop details</h3>
+            <p><strong>📍</strong> Bonn, Landgrabenweg 149</p>
+            <p><strong>📅</strong> April 20–21, 2026 · 09:00 start</p>
+            <p><strong>📶</strong> WLAN: DTxAnthropicCampus · password: ClaudeAI</p>
+        </div>
+    </div>
+</main>
+{% endblock %}

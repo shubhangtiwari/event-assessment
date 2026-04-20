@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Claude Enablement{% endblock %}
+
+{% block header_actions %}
+<a href="{{ url_for('admin_logout') }}">Sign out</a>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <div>
+            <div class="eyebrow">Organizer dashboard</div>
+            <h1>Claude Enablement · Registrations</h1>
+        </div>
+        <div class="controls">
+            <label>
+                Group size
+                <input type="number" id="group-size" value="{{ default_group_size }}" min="2" max="20">
+            </label>
+            <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
+            <a href="#" class="btn btn-primary" id="export-btn">Export Excel</a>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat accent">
+            <div class="label">Total responses</div>
+            <div class="value" id="stat-total">—</div>
+        </div>
+        <div class="stat">
+            <div class="label">Groups formed</div>
+            <div class="value" id="stat-groups">—</div>
+        </div>
+        <div class="stat">
+            <div class="label">Avg score</div>
+            <div class="value" id="stat-avg"><span>—</span><span class="unit">/ 45</span></div>
+        </div>
+        <div class="stat">
+            <div class="label">Level distribution</div>
+            <div class="value" style="font-size: 16px; font-weight: 500; margin-top: 2px; line-height: 1.4;" id="stat-levels">—</div>
+            <div class="level-bar" id="level-bar">
+                <div class="seg-beginner" style="width:33%"></div>
+                <div class="seg-intermediate" style="width:33%"></div>
+                <div class="seg-advanced" style="width:33%"></div>
+            </div>
+            <div class="level-legend">
+                <span><span class="dot" style="background:#F49AC2"></span>Beginner</span>
+                <span><span class="dot" style="background:#F2C94C"></span>Intermediate</span>
+                <span><span class="dot" style="background:#6BAE6E"></span>Advanced</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" data-tab="groups">Groups</button>
+        <button class="tab" data-tab="participants">Participants</button>
+        <button class="tab" data-tab="settings">Settings</button>
+    </div>
+
+    <div class="tab-panel active" id="panel-groups">
+        <div id="groups-container" class="groups-grid"></div>
+        <div id="groups-empty" class="empty-state" style="display: none;">
+            <h3>No responses yet</h3>
+            <p>Groups appear automatically as participants submit the form.</p>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="panel-participants">
+        <div id="participants-container"></div>
+        <div id="participants-empty" class="empty-state" style="display: none;">
+            <h3>No responses yet</h3>
+            <p>Responses appear here as they come in.</p>
+        </div>
+    </div>
+
+    <div class="tab-panel" id="panel-settings">
+        <div class="settings-card">
+            <h3>Public survey URL</h3>
+            <p class="settings-hint">
+                This URL is encoded into the QR code shown on the
+                <a href="{{ url_for('banner') }}" target="_blank">/banner</a> page
+                for attendees to scan. Use your ngrok or Cloudflare tunnel URL.
+            </p>
+            <form id="settings-form" class="settings-form">
+                <label for="proxy-url">Proxy URL</label>
+                <input type="url" id="proxy-url" name="proxy_url"
+                       placeholder="https://your-tunnel.example.com/">
+                <div class="settings-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{{ url_for('banner') }}" target="_blank" class="btn btn-secondary">Open banner</a>
+                    <span id="settings-status" class="small"></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

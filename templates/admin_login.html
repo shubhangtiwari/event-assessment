@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Admin login · Claude Enablement{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="login-box">
+        <h1>Organizer access</h1>
+        <p class="sub">Sign in to view submissions and group assignments.</p>
+
+        <form method="post" action="{{ url_for('admin_login') }}">
+            <div class="field" style="border: 0; padding: 0; margin: 0;">
+                <label class="field-label" for="password">Password</label>
+                <input type="password" name="password" id="password" autofocus required>
+            </div>
+            {% if error %}
+                <div class="errors"><ul><li>{{ error }}</li></ul></div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary" style="width:100%;">Sign in</button>
+        </form>
+
+        {% if default_password %}
+        <div class="login-warn">
+            <strong>Warning:</strong> the admin password is the default (<code>admin</code>).
+            Before exposing this app via ngrok, set a strong <code>ADMIN_PASSWORD</code>
+            environment variable and restart.
+        </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Already submitted · Claude Enablement{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="section center-card">
+        <div class="icon">✓</div>
+        <h1>You've already submitted.</h1>
+        {% if by_email %}
+        <p>A response with this email address is already on file.</p>
+        <p class="muted">
+            If you think this is a mistake — maybe a teammate used your email —
+            reach out to the organizers and we'll sort it out.
+        </p>
+        {% else %}
+        <p>Thanks, we've already recorded your response.</p>
+        {% endif %}
+
+        <div class="details">
+            <h3>See you in Bonn</h3>
+            <p><strong>📅</strong> April 20–21, 2026 · 09:00 start</p>
+            <p><strong>📍</strong> Landgrabenweg 149, Bonn</p>
+        </div>
+    </div>
+</main>
+{% endblock %}

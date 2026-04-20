@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+*.pem
+data/secret_key
+
+# Database
+data/*.sqlite
+data/*.sqlite-journal
+data/*.db
+
+# Playwright / MCP debug artifacts
+.playwright-mcp/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Claude local settings
+.claude/settings.local.json

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Scan to check in · Claude Enablement{% endblock %}
+
+{% block content %}
+<section class="banner">
+    <div class="banner-inner">
+        <span class="eyebrow">Claude Enablement · Bonn, April 20–21, 2026</span>
+        <h1>Scan the QR code for a quick check-in.</h1>
+
+        {% if qr_svg %}
+        <div class="qr-wrap">
+            {{ qr_svg | safe }}
+        </div>
+        <div class="qr-url">{{ proxy_url }}</div>
+        {% else %}
+        <div class="qr-empty">
+            <h3>No public URL configured yet</h3>
+            <p>An organizer needs to set the proxy URL in the admin dashboard → Settings.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
