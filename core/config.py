@@ -1,4 +1,5 @@
 """Runtime + scoring configuration."""
+
 import os
 from pathlib import Path
 
@@ -18,7 +19,7 @@ HOST = os.environ.get("HOST", "0.0.0.0")
 # Admin password for the dashboard. Set ADMIN_PASSWORD in the environment
 # before exposing publicly. Defaults to "admin" with a loud warning.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
-ADMIN_PASSWORD_IS_DEFAULT = (ADMIN_PASSWORD == "admin")
+ADMIN_PASSWORD_IS_DEFAULT = ADMIN_PASSWORD == "admin"
 
 # Cookie names.
 RESPONDENT_COOKIE = "claude_assessment_respondent"
@@ -35,19 +36,19 @@ Q7_MAX = 2
 
 # Q8 frequency ordinal.
 Q8_SCORES = {
-    "never used":              0,
-    "tried once or twice":     1,
-    "occasional":              2,
-    "regular":                 3,
-    "daily driver":            4,
+    "never used": 0,
+    "tried once or twice": 1,
+    "occasional": 2,
+    "regular": 3,
+    "daily driver": 4,
 }
 
 # Q9 ordinal.
 Q9_SCORES = {
-    "no, never":               0,
-    "explored":                1,
+    "no, never": 0,
+    "explored": 1,
     "built a small prototype": 3,
-    "shipped":                 5,
+    "shipped": 5,
 }
 
 # Q10 multi-select — 1 point per item, cap at 8.
@@ -61,9 +62,9 @@ KNOWLEDGE_POINTS_PER_CORRECT = 3
 MAX_SCORE = 45
 
 LEVEL_THRESHOLDS = [
-    ("Beginner",     0,  14),
-    ("Intermediate", 15, 28),
-    ("Advanced",     29, 45),
+    ("Beginner", 0, 15),
+    ("Intermediate", 16, 30),
+    ("Advanced", 31, 45),
 ]
 
 # ---------------------------------------------------------------------------
