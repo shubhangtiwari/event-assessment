@@ -16,7 +16,7 @@ PORT = int(os.environ.get("PORT", 2408))
 HOST = os.environ.get("HOST", "0.0.0.0")
 
 # Admin password for the dashboard. Set ADMIN_PASSWORD in the environment
-# before exposing via ngrok. Defaults to "admin" with a loud warning.
+# before exposing publicly. Defaults to "admin" with a loud warning.
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
 ADMIN_PASSWORD_IS_DEFAULT = (ADMIN_PASSWORD == "admin")
 

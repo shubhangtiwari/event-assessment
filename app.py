@@ -467,7 +467,7 @@ def _startup_banner() -> None:
     print(f"├{border}┤")
     if ADMIN_PASSWORD_IS_DEFAULT:
         print("│  ⚠  Admin password is the default ('admin').                       │")
-        print("│     Before exposing via ngrok, set: export ADMIN_PASSWORD=...      │")
+        print("│     Before exposing publicly, set: export ADMIN_PASSWORD=...       │")
     else:
         print("│  Admin password: configured via ADMIN_PASSWORD env var.            │")
     print(f"│  Submissions so far: {db.count_submissions()}{' ' * (46 - len(str(db.count_submissions())))}│")
@@ -477,6 +477,5 @@ def _startup_banner() -> None:
 
 if __name__ == "__main__":
     _startup_banner()
-    # Use Flask's built-in server — fine for local + ngrok. debug=False so
-    # the auto-reloader doesn't double the banner or the DB init.
+    # debug=False so the auto-reloader doesn't double the banner or the DB init.
     app.run(host=HOST, port=PORT, debug=False)

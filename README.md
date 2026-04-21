@@ -18,8 +18,8 @@ in a live dashboard.
 - **Live organizer dashboard** — auto-refreshes every 30 seconds,
   tabbed view (Groups / Participants), level-distribution bar, Excel export.
 - **SQLite storage** — a single `data/responses.sqlite` file; no DB server.
-- **One-command start** — `make start` (Flask + ngrok tunnel) or `make app` (Flask only).
-- **ngrok-ready** — listens on `0.0.0.0:2408` by default.
+- **One-command start** — `make start` (Flask only) or `make start-cf` (Flask + Cloudflare quick tunnel for local previews).
+- **Deploy-friendly** — listens on `0.0.0.0:2408` by default; drop it behind any reverse proxy on EC2.
 
 ---
 
@@ -28,12 +28,12 @@ in a live dashboard.
 Requires [`uv`](https://docs.astral.sh/uv/) and `make`.
 
 ```bash
-make app           # Flask only, on localhost:2408
-make start         # Flask + ngrok tunnel (needs NGROK_DOMAIN in .env)
-make start-cf      # Flask + Cloudflare quick tunnel
+make start         # Flask only, on localhost:2408 (use this in production / EC2)
+make start-cf      # Flask + Cloudflare quick tunnel (local preview with a public URL)
+make tunnel        # Cloudflare tunnel only, against an already-running app
 ```
 
-`make install` runs `uv sync`; the `app`/`start` targets invoke it automatically. On first run you'll see:
+`make install` runs `uv sync`; the `start`/`start-cf` targets invoke it automatically. On first run you'll see:
 
 ```
 ┌────────────────────────────────────────────────────────────────────┐
@@ -44,39 +44,39 @@ make start-cf      # Flask + Cloudflare quick tunnel
 │  Dashboard: http://localhost:2408/admin/login                     │
 ├────────────────────────────────────────────────────────────────────┤
 │  ⚠  Admin password is the default ('admin').                      │
-│     Before exposing via ngrok, set: export ADMIN_PASSWORD=...     │
+│     Before exposing publicly, set: export ADMIN_PASSWORD=...      │
 │  Submissions so far: 0                                            │
 └────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Exposing via ngrok
+## Deployment (AWS EC2)
 
-`make start` runs Flask and ngrok together (using `NGROK_DOMAIN` from `.env`).
-If you only want the tunnel against an already-running app, use `make tunnel`.
+On the instance, run `make start` behind your preferred reverse proxy (nginx,
+ALB, CloudFront, etc.). The app listens on `0.0.0.0:2408` by default — change
+with `PORT=... make start` or by setting `PORT` in `.env`.
 
-ngrok will print a public `https://xxxx.ngrok-free.app` URL. Share **only** the
-root URL with participants — the `/admin/*` routes are password-protected.
+**Checklist before you expose it publicly:**
 
-### Before you open the ngrok tunnel
-
-1. **Set a real admin password.** The default is `admin`, which is
-   unacceptable once the app is reachable from the public internet.
-   Put it in `.env` or export it before running `make start`:
+1. **Set a strong admin password.** The default is `admin` and is rejected by
+   any security review.
 
    ```bash
-   export ADMIN_PASSWORD="something-long-and-random"
+   echo 'ADMIN_PASSWORD=something-long-and-random' >> .env
    make start
    ```
 
-2. **Confirm the survey loads** at `https://your-ngrok-url/` — check
-   that the header, hero, and form all render.
+2. **Terminate TLS at the proxy.** The Flask dev server speaks HTTP only.
+3. **Confirm the survey loads** at `https://your-domain/` — header, hero, and form.
+4. **Watch the dashboard** at `https://your-domain/admin/login` with your `ADMIN_PASSWORD`.
 
-3. **Share the URL** with invited participants.
+### Local preview with a public URL
 
-4. **Watch the dashboard** at `https://your-ngrok-url/admin/login` —
-   sign in with your `ADMIN_PASSWORD`.
+If you want a public URL without deploying (demo, sharing with a colleague),
+`make start-cf` spins up a Cloudflare quick tunnel alongside Flask and writes
+the generated `trycloudflare.com` URL into the settings table so `/banner`'s
+QR code picks it up automatically.
 
 ---
 
@@ -94,7 +94,7 @@ event_assessment/
 │   └── scorer.py            # Submission scoring logic
 ├── pyproject.toml           # uv-managed dependencies
 ├── uv.lock
-├── Makefile                 # `make app` / `make start` / `make start-cf`
+├── Makefile                 # `make start` / `make start-cf` / `make tunnel`
 ├── scripts/
 │   └── capture_tunnel_url.py  # stores cloudflared URL for the banner page
 ├── README.md                # this file
@@ -123,7 +123,7 @@ All tunables are environment variables — no config file editing needed.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `ADMIN_PASSWORD` | `admin` | Dashboard password. **Must be set before ngrok exposure.** |
+| `ADMIN_PASSWORD` | `admin` | Dashboard password. **Must be set before public exposure.** |
 | `PORT` | `2408` | Port to listen on. |
 | `HOST` | `0.0.0.0` | Bind host. Use `127.0.0.1` to block remote access entirely. |
 | `GROUP_SIZE` | `6` | Default group size (can also be changed live in the dashboard). |
@@ -154,14 +154,14 @@ naturally rebalance — which is the desired behavior until registration closes.
 - Session cookies are HTTP-only and signed with a persisted 32-byte key
   at `data/secret_key` — keep this file out of version control.
 - The app sets `robots: noindex, nofollow` so it won't be indexed even
-  while accessible via ngrok.
+  while accessible on a public URL.
 
 ---
 
 ## Troubleshooting
 
 **Port 2408 already in use.** Edit `PORT` at the top of the `Makefile`
-(or override per-invocation: `make app PORT=2409`).
+(or override per-invocation: `make start PORT=2409`).
 
 **Someone cleared their cookies and wants to resubmit.** Don't let them —
 the app also blocks duplicates by email. If there's a legitimate reason,
